@@ -26,6 +26,19 @@ public class CustomerController {
     @Autowired
     private ProvinceService provinceService;
 
+    @GetMapping("{id}")
+    public ModelAndView showInformation(@PathVariable Long id) {
+        try {
+            ModelAndView modelAndView = new ModelAndView("customer/info");
+            Customer customer = null;
+            customer = customerService.findById(id);
+            modelAndView.addObject("customer",customer);
+            return modelAndView;
+        } catch (Exception exception) {
+            return new ModelAndView("redirect:/customers");
+        }
+    }
+
     @ModelAttribute("provinces")
     public Iterable<Province> provinces(){
         return provinceService.findAll();
@@ -64,7 +77,7 @@ public class CustomerController {
     }
 
     @GetMapping("/edit-customer/{id}")
-    public ModelAndView showEditForm(@PathVariable Long id) {
+    public ModelAndView showEditForm(@PathVariable Long id) throws Exception {
         Customer customer = customerService.findById(id);
         if (customer != null) {
             ModelAndView modelAndView = new ModelAndView("/customer/edit");
@@ -87,7 +100,7 @@ public class CustomerController {
     }
 
     @GetMapping("/delete-customer/{id}")
-    public ModelAndView showDeleteForm(@PathVariable Long id) {
+    public ModelAndView showDeleteForm(@PathVariable Long id) throws Exception {
         Customer customer = customerService.findById(id);
         if (customer != null) {
             ModelAndView modelAndView = new ModelAndView("/customer/delete");

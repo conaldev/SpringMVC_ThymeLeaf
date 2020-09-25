@@ -1,12 +1,11 @@
-package com.minh.config;
+package com.minh;
 
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
-public class ApplicationInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
-
+public class AppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
     @Override
     protected Class<?>[] getRootConfigClasses() {
-        return new Class[]{ApplicationConfig.class};
+        return new Class[]{AppConfiguration.class};
     }
 
     @Override

@@ -19,8 +19,12 @@ public class CustomerServiceImpl implements CustomerService{
     }
 
     @Override
-    public Customer findById(Long id) {
-        return customerRepository.findOne(id);
+    public Customer findById(Long id) throws Exception{
+        Customer target =  customerRepository.findOne(id);
+        if (target == null) {
+            throw new Exception("customer not found!");
+        }
+        return target;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.minh.config;
 
 
+import com.minh.concern.Logger;
 import com.minh.formatter.ProvinceFormatter;
 import com.minh.service.CustomerService;
 import com.minh.service.CustomerServiceImpl;
@@ -13,6 +14,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.format.FormatterRegistry;
@@ -42,6 +44,7 @@ import java.util.Properties;
 @EnableJpaRepositories("com.minh.repository")
 @ComponentScan("com.minh.controller")
 @EnableSpringDataWebSupport
+@EnableAspectJAutoProxy
 public class ApplicationConfig extends WebMvcConfigurerAdapter implements ApplicationContextAware {
 
     private ApplicationContext applicationContext;
@@ -131,5 +134,9 @@ public class ApplicationConfig extends WebMvcConfigurerAdapter implements Applic
     @Override
     public void addFormatters(FormatterRegistry registry) {
         registry.addFormatter(new ProvinceFormatter(applicationContext.getBean(ProvinceService.class)));
+    }
+    @Bean
+    public Logger logger(){
+        return new Logger();
     }
 }

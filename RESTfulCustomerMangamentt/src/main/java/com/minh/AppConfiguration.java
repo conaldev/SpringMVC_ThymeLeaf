@@ -1,6 +1,9 @@
-package com.minh.config;
+package com.minh;
 
-
+import com.minh.repository.CustomerRepository;
+import com.minh.repository.CustomerRepositoryImpl;
+import com.minh.service.CustomerService;
+import com.minh.service.CustomerServiceImpl;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
@@ -8,8 +11,6 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
@@ -19,24 +20,18 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.spring4.SpringTemplateEngine;
-import org.thymeleaf.spring4.templateresolver.SpringResourceTemplateResolver;
-import org.thymeleaf.spring4.view.ThymeleafViewResolver;
-import org.thymeleaf.templatemode.TemplateMode;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import java.util.Properties;
 
+
 @Configuration
 @EnableWebMvc
 @EnableTransactionManagement
-@EnableJpaRepositories("com.minh.repository")
 @ComponentScan("com.minh.controller")
-@EnableSpringDataWebSupport
-public class ApplicationConfig extends WebMvcConfigurerAdapter implements ApplicationContextAware {
+public class AppConfiguration extends WebMvcConfigurerAdapter implements ApplicationContextAware {
 
     private ApplicationContext applicationContext;
 
@@ -45,41 +40,18 @@ public class ApplicationConfig extends WebMvcConfigurerAdapter implements Applic
         this.applicationContext = applicationContext;
     }
 
-//    @Bean
-//    public CustomerService customerService(){
-//        return new CustomerServiceImpl();
-//    }
-//    @Bean
-//    public ProvinceService provinceService(){
-//        return new ProvinceServiceImpl();
-//    }
-
-    //Thymeleaf Configuration
     @Bean
-    public SpringResourceTemplateResolver templateResolver(){
-        SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
-        templateResolver.setApplicationContext(applicationContext);
-        templateResolver.setPrefix("/WEB-INF/views");
-        templateResolver.setSuffix(".html");
-        templateResolver.setTemplateMode(TemplateMode.HTML);
-        return templateResolver;
+    public CustomerRepository customerRepository(){
+        return new CustomerRepositoryImpl();
     }
 
     @Bean
-    public TemplateEngine templateEngine(){
-        TemplateEngine templateEngine = new SpringTemplateEngine();
-        templateEngine.setTemplateResolver(templateResolver());
-        return templateEngine;
-    }
-
-    @Bean
-    public ThymeleafViewResolver viewResolver(){
-        ThymeleafViewResolver viewResolver = new ThymeleafViewResolver();
-        viewResolver.setTemplateEngine(templateEngine());
-        return viewResolver;
+    public CustomerService customerService(){
+        return new CustomerServiceImpl();
     }
 
     //JPA configuration
+
     @Bean
     @Qualifier(value = "entityManager")
     public EntityManager entityManager(EntityManagerFactory entityManagerFactory) {
@@ -102,7 +74,7 @@ public class ApplicationConfig extends WebMvcConfigurerAdapter implements Applic
     public DataSource dataSource(){
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        dataSource.setUrl("jdbc:mysql://localhost:3306/mid");
+        dataSource.setUrl("jdbc:mysql://localhost:3306/restful");
         dataSource.setUsername( "conal" );
         dataSource.setPassword( "12345678" );
         return dataSource;
@@ -121,9 +93,4 @@ public class ApplicationConfig extends WebMvcConfigurerAdapter implements Applic
         properties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
         return properties;
     }
-
-//    @Override
-//    public void addFormatters(FormatterRegistry registry) {
-//        registry.addFormatter(new ProvinceFormatter(applicationContext.getBean(ProvinceService.class)));
-//    }
 }
